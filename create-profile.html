@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DV | Protect - Create Brand Safety Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif'],
+          },
+          colors: {
+            'gray': {
+              50: '#F9FAFB',
+              100: '#F2F4F7',
+              200: '#E4E7EC',
+              300: '#D0D5DD',
+              400: '#98A2B3',
+              500: '#667085',
+              600: '#475467',
+              700: '#344054',
+              800: '#1D2939',
+              900: '#101828',
+            },
+            'brand': {
+              purple: '#7F56D9',
+              'purple-light': '#F4F3FF',
+              'purple-dark': '#6941C6',
+            },
+            'status': {
+              'red': '#F04438',
+              'red-light': '#FEF3F2',
+              'red-dark': '#B42318',
+              'green': '#12B76A',
+              'green-light': '#ECFDF3',
+              'yellow': '#F79009',
+              'yellow-light': '#FFFAEB',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+
+    /* Ensure hidden elements stay hidden before Tailwind loads */
+    .hidden { display: none !important; }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .animate-section {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .animate-section.visible {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    /* Typing indicator */
+    .typing-dot {
+      animation: typingBounce 1.4s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #E4E7EC;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #D0D5DD;
+    }
+
+    /* Section card styling */
+    .section-card {
+      transition: all 0.2s ease;
+    }
+    .section-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Checkbox styling */
+    input[type="checkbox"]:checked {
+      background-color: #7F56D9;
+      border-color: #7F56D9;
+    }
+  </style>
+</head>
+<body class="h-full bg-gray-50">
+  <div id="app" class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-900 flex flex-col flex-shrink-0">
+      <!-- Logo -->
+      <div class="px-5 py-5 flex items-center gap-3">
+        <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center">
+          <span class="text-gray-900 font-bold text-lg">DV</span>
+        </div>
+        <div>
+          <h1 class="text-white font-semibold text-base leading-tight">Protect</h1>
+          <p class="text-gray-400 text-xs">by DoubleVerify</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex flex-col gap-1 px-3">
+        <a href="campaigns.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+          </svg>
+          <span class="text-sm font-medium">Campaigns</span>
+        </a>
+        <a href="profiles.html" class="flex items-center gap-3 px-3 py-2 rounded-md bg-gray-800 text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          <span class="text-sm font-medium">Brand Safety Profiles</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <span class="text-sm font-medium">Reports</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          <span class="text-sm font-medium">Support</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-hidden bg-white">
+      <!-- Header -->
+      <header class="px-8 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-3">
+          <a href="profiles.html" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+          </a>
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+            </svg>
+            <span class="text-base font-semibold text-gray-900">Create Brand Safety Profile</span>
+            <span class="text-xs text-gray-400 italic">powered by Vera</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Chat Container -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Messages Area -->
+        <div id="messagesArea" class="flex-1 overflow-y-auto custom-scrollbar px-8 py-6">
+          <div id="messageContainer" class="max-w-4xl mx-auto space-y-6">
+
+            <!-- Welcome Message with Two Options (shown initially) -->
+            <div id="welcomeMessage" class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <div class="text-sm font-medium text-gray-900 mb-3">Vera</div>
+                <div class="space-y-4 text-sm text-gray-700">
+                  <p>Hi! I'm Vera, your brand safety assistant. I can help you create a customized brand safety profile. How would you like to get started?</p>
+
+                  <!-- Two Option Cards -->
+                  <div class="grid grid-cols-2 gap-4">
+                    <!-- Option 1: Upload Campaign Brief -->
+                    <button onclick="startWithUpload()" class="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-brand-purple hover:shadow-md transition-all">
+                      <div class="flex items-center gap-3 mb-2">
+                        <div class="w-8 h-8 bg-brand-purple-light rounded-lg flex items-center justify-center">
+                          <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                          </svg>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">Upload Campaign Brief</span>
+                      </div>
+                      <p class="text-xs text-gray-500">Share your campaign objectives and brand guidelines</p>
+                    </button>
+
+                    <!-- Option 2: Analyze Website -->
+                    <button onclick="analyzeWebsite()" class="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-brand-purple hover:shadow-md transition-all">
+                      <div class="flex items-center gap-3 mb-2">
+                        <div class="w-8 h-8 bg-brand-purple-light rounded-lg flex items-center justify-center">
+                          <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                          </svg>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">Analyze Website</span>
+                      </div>
+                      <p class="text-xs text-gray-500">harbourview.com</p>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload Interface (hidden initially) -->
+            <div id="uploadInterface" class="hidden">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-medium text-gray-900 mb-3">Vera</div>
+                  <div class="space-y-4 text-sm text-gray-700">
+                    <p>Great! Upload your campaign brief and I'll analyze it to recommend optimal brand safety settings.</p>
+
+                    <!-- Upload Card -->
+                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                      <div class="p-5">
+                        <!-- Drop Zone (hidden when file is attached) -->
+                        <div id="dropZone" class="hidden border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-brand-purple hover:bg-brand-purple-light/20 transition-colors cursor-pointer" onclick="document.getElementById('fileInput').click()">
+                          <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(event)">
+                          <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                          </div>
+                          <p class="text-sm font-medium text-gray-700 mb-1">Drop your campaign brief here</p>
+                          <p class="text-xs text-gray-500">or click to browse • PDF, DOC, DOCX, TXT</p>
+                        </div>
+
+                        <!-- Pre-populated File Preview (shown by default for demo) -->
+                        <div id="filePreview" class="p-3 bg-gray-50 rounded-lg">
+                          <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-brand-purple-light flex items-center justify-center">
+                              <svg class="w-5 h-5 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                              </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                              <p id="fileName" class="text-sm font-medium text-gray-900 truncate">Q1_2026_Harbor_Brew_Zero_Campaign_Brief.pdf</p>
+                              <p id="fileSize" class="text-xs text-gray-500">2.4 MB</p>
+                            </div>
+                            <button onclick="removeFile(event)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200 transition-colors">
+                              <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="bg-gray-50 px-5 py-3 border-t border-gray-200 flex items-center justify-end">
+                        <button id="analyzeBtn" onclick="startAnalysis()" class="px-4 py-2 bg-brand-purple text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors">
+                          Analyze Brief
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- URL Interface (hidden initially) -->
+            <div id="urlInterface" class="hidden">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-medium text-gray-900 mb-3">Vera</div>
+                  <div class="space-y-4 text-sm text-gray-700">
+                    <p>Enter your homepage URL and I'll analyze your website to understand your brand and recommend appropriate safety settings.</p>
+
+                    <!-- URL Input Card -->
+                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                      <div class="p-5">
+                        <div class="flex gap-3">
+                          <input
+                            type="url"
+                            id="urlInput"
+                            placeholder="https://www.example.com"
+                            class="flex-1 px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent"
+                          >
+                          <button onclick="analyzeURL()" class="px-4 py-2 bg-brand-purple text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors">
+                            Analyze
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thinking Indicator (hidden initially) -->
+            <div id="thinkingIndicator" class="hidden flex items-start gap-3">
+              <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+              </div>
+              <div class="flex items-center gap-2 px-4 py-3 bg-gray-50 rounded-xl">
+                <div class="flex items-center gap-1">
+                  <div class="typing-dot w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <div class="typing-dot w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <div class="typing-dot w-2 h-2 bg-brand-purple rounded-full"></div>
+                </div>
+                <span id="thinkingText" class="text-sm text-gray-500 italic">Analyzing campaign brief...</span>
+              </div>
+            </div>
+
+            <!-- Profile Summary Message -->
+            <div id="profileSummary" class="hidden">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-medium text-gray-900 mb-3">Vera</div>
+
+                  <div class="space-y-5 text-sm text-gray-700">
+                    <p id="introText" class="animate-section">I've analyzed your campaign brief and prepared a brand safety profile. Please review each section and make any adjustments needed.</p>
+
+                    <!-- General Information Card -->
+                    <div id="generalCard" class="animate-section section-card bg-white border border-gray-200 rounded-xl overflow-hidden">
+                      <div class="bg-gray-50 px-5 py-3 border-b border-gray-200">
+                        <div class="flex items-center gap-2">
+                          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>
+                          <span class="text-sm font-semibold text-gray-900">General Information</span>
+                        </div>
+                      </div>
+                      <div class="p-5 space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                          <div>
+                            <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-1">Profile Name</div>
+                            <div class="text-sm font-medium text-gray-900">Q1 2026 Harbor Brew Zero Brand Awareness - US Market</div>
+                          </div>
+                          <div>
+                            <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-1">Industry Benchmark</div>
+                            <div class="text-sm font-medium text-gray-900 flex items-center gap-2">
+                              CPG Industry, Beverages Sector
+                              <span class="text-[10px] text-status-green bg-status-green-light px-2 py-0.5 rounded">Aligned</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                          <div>
+                            <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-1">Buy Type</div>
+                            <div class="text-sm font-medium text-gray-900">RTD</div>
+                          </div>
+                          <div>
+                            <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-1">Campaign Goals</div>
+                            <div class="text-sm font-medium text-gray-900">Raise brand awareness for non-alcoholic beer product</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="generalApproval" class="bg-gray-50 px-5 py-3 border-t border-gray-200 flex items-center justify-between">
+                        <span class="text-xs text-gray-500">Does this look correct?</span>
+                        <div class="flex items-center gap-2">
+                          <button onclick="approveSection('general')" class="px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
+                            Approve
+                          </button>
+                          <button onclick="editSection('general')" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Avoidance Topics Card -->
+                    <div id="avoidanceCard" class="animate-section section-card bg-white border border-gray-200 rounded-xl overflow-hidden">
+                      <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                          </svg>
+                          <span class="text-sm font-semibold text-gray-900">Avoidance Topics</span>
+                          <span class="text-[10px] text-brand-purple bg-brand-purple-light px-2 py-0.5 rounded font-medium inline-flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            Industry Standard
+                          </span>
+                        </div>
+                      </div>
+                      <div class="p-5">
+                        <p class="text-xs text-gray-500 mb-4">Topics that could be unblocked for your non-alcoholic beverage brand are highlighted. Industry standard blocking is pre-selected.</p>
+
+                        <!-- Categories Grid -->
+                        <div class="space-y-4">
+                          <!-- Adult & Sexual -->
+                          <div class="border border-gray-100 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                              <div class="flex items-center gap-2">
+                                <input type="checkbox" id="cat-adult" checked class="w-4 h-4 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <label for="cat-adult" class="text-sm font-medium text-gray-900">Adult & Sexual</label>
+                              </div>
+                              <span class="text-[10px] text-status-red bg-status-red-light px-2 py-0.5 rounded">Block All</span>
+                            </div>
+                            <div class="pl-6 space-y-2">
+                              <div class="flex items-center gap-2">
+                                <input type="checkbox" id="topic-swimsuits" class="w-3.5 h-3.5 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <label for="topic-swimsuits" class="text-xs text-gray-600 flex items-center gap-2">
+                                  Swimsuits
+                                  <span class="text-[9px] text-status-yellow bg-status-yellow-light px-1.5 py-0.5 rounded">Can Unblock</span>
+                                </label>
+                              </div>
+                              <div class="flex items-center gap-2">
+                                <input type="checkbox" id="topic-sexual-health" class="w-3.5 h-3.5 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <label for="topic-sexual-health" class="text-xs text-gray-600 flex items-center gap-2">
+                                  Sexual Health
+                                  <span class="text-[9px] text-status-yellow bg-status-yellow-light px-1.5 py-0.5 rounded">Can Unblock</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Alcohol -->
+                          <div class="border border-amber-200 bg-amber-50/50 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                              <div class="flex items-center gap-2">
+                                <input type="checkbox" id="cat-alcohol" class="w-4 h-4 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <label for="cat-alcohol" class="text-sm font-medium text-gray-900">Alcohol</label>
+                              </div>
+                              <span class="text-[10px] text-status-yellow bg-status-yellow-light px-2 py-0.5 rounded">Selective Blocking</span>
+                            </div>
+                            <p class="text-[11px] text-amber-700 mb-3 pl-6">As a non-alcoholic beer brand, you may want to appear alongside responsible drinking content.</p>
+                            <div class="pl-6 space-y-2">
+                              <div class="flex items-center gap-2">
+                                <input type="checkbox" id="topic-alcohol-scientific" checked class="w-3.5 h-3.5 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <label for="topic-alcohol-scientific" class="text-xs text-gray-600 flex items-center gap-2">
+                                  Scientific, Educational & Historical Content
+                                  <span class="text-[9px] text-status-green bg-status-green-light px-1.5 py-0.5 rounded">Recommended</span>
+                                </label>
+                              </div>
+                              <div class="flex items-center gap-2">
+                                <input type="checkbox" id="topic-alcohol-law" checked class="w-3.5 h-3.5 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <label for="topic-alcohol-law" class="text-xs text-gray-600 flex items-center gap-2">
+                                  Alcohol Law and Regulations
+                                  <span class="text-[9px] text-status-green bg-status-green-light px-1.5 py-0.5 rounded">Recommended</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Politics -->
+                          <div class="border border-gray-100 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                              <div class="flex items-center gap-2">
+                                <input type="checkbox" id="cat-politics" checked class="w-4 h-4 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <label for="cat-politics" class="text-sm font-medium text-gray-900">Politics</label>
+                              </div>
+                              <span class="text-[10px] text-status-red bg-status-red-light px-2 py-0.5 rounded">Block All</span>
+                            </div>
+                            <div class="pl-6 space-y-2">
+                              <div class="flex items-center gap-2">
+                                <input type="checkbox" id="topic-public-health" class="w-3.5 h-3.5 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <label for="topic-public-health" class="text-xs text-gray-600 flex items-center gap-2">
+                                  Public Healthcare
+                                  <span class="text-[9px] text-status-yellow bg-status-yellow-light px-1.5 py-0.5 rounded">Can Unblock</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Financials -->
+                          <div class="border border-gray-100 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                              <div class="flex items-center gap-2">
+                                <input type="checkbox" id="cat-financials" checked class="w-4 h-4 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <label for="cat-financials" class="text-sm font-medium text-gray-900">Financials</label>
+                              </div>
+                              <span class="text-[10px] text-status-red bg-status-red-light px-2 py-0.5 rounded">Block All</span>
+                            </div>
+                          </div>
+
+                          <!-- More categories collapsed -->
+                          <button onclick="toggleMoreCategories()" class="flex items-center gap-2 text-xs text-brand-purple font-medium hover:text-brand-purple-dark">
+                            <span id="moreCategoriesText">Show 8 more categories</span>
+                            <svg id="moreCategoriesIcon" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                      <div id="avoidanceApproval" class="bg-gray-50 px-5 py-3 border-t border-gray-200 flex items-center justify-between">
+                        <span class="text-xs text-gray-500">Review the topic selections above</span>
+                        <div class="flex items-center gap-2">
+                          <button onclick="approveSection('avoidance')" class="px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
+                            Approve
+                          </button>
+                          <button onclick="editSection('avoidance')" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Keywords Card -->
+                    <div id="keywordsCard" class="animate-section section-card bg-white border border-gray-200 rounded-xl overflow-hidden">
+                      <div class="bg-gray-50 px-5 py-3 border-b border-gray-200">
+                        <div class="flex items-center gap-2">
+                          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                          </svg>
+                          <span class="text-sm font-semibold text-gray-900">Keywords</span>
+                        </div>
+                      </div>
+                      <div class="p-5">
+                        <p class="text-xs text-gray-500 mb-3">Blocked keywords based on industry standards and campaign goals:</p>
+                        <div class="flex flex-wrap gap-2">
+                          <span class="px-2.5 py-1 bg-status-red-light text-status-red text-xs rounded-full">drunk driving</span>
+                          <span class="px-2.5 py-1 bg-status-red-light text-status-red text-xs rounded-full">alcohol poisoning</span>
+                          <span class="px-2.5 py-1 bg-status-red-light text-status-red text-xs rounded-full">binge drinking</span>
+                          <span class="px-2.5 py-1 bg-status-red-light text-status-red text-xs rounded-full">underage drinking</span>
+                          <span class="px-2.5 py-1 bg-status-red-light text-status-red text-xs rounded-full">alcoholism</span>
+                          <span class="px-2.5 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">+12 more</span>
+                        </div>
+                      </div>
+                      <div id="keywordsApproval" class="bg-gray-50 px-5 py-3 border-t border-gray-200 flex items-center justify-between">
+                        <span class="text-xs text-gray-500">17 keywords will be blocked</span>
+                        <div class="flex items-center gap-2">
+                          <button onclick="approveSection('keywords')" class="px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
+                            Approve
+                          </button>
+                          <button onclick="editSection('keywords')" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Site Exclusion/Inclusion Card -->
+                    <div id="sitesCard" class="animate-section section-card bg-white border border-gray-200 rounded-xl overflow-hidden">
+                      <div class="bg-gray-50 px-5 py-3 border-b border-gray-200">
+                        <div class="flex items-center gap-2">
+                          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                          </svg>
+                          <span class="text-sm font-semibold text-gray-900">Site Exclusion / Inclusion</span>
+                        </div>
+                      </div>
+                      <div class="p-5">
+                        <div class="grid grid-cols-2 gap-4">
+                          <div>
+                            <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-2">Excluded Domains</div>
+                            <div class="space-y-1.5">
+                              <div class="flex items-center gap-2 text-xs text-gray-600">
+                                <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
+                                clickbait-news.com
+                              </div>
+                              <div class="flex items-center gap-2 text-xs text-gray-600">
+                                <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
+                                fake-reviews.net
+                              </div>
+                              <div class="flex items-center gap-2 text-xs text-gray-600">
+                                <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
+                                low-quality-content.io
+                              </div>
+                              <div class="text-xs text-gray-400">+24 more excluded</div>
+                            </div>
+                          </div>
+                          <div>
+                            <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-2">Included Domains (Allowlist)</div>
+                            <div class="space-y-1.5">
+                              <div class="flex items-center gap-2 text-xs text-gray-600">
+                                <span class="w-1.5 h-1.5 bg-status-green rounded-full"></span>
+                                espn.com
+                              </div>
+                              <div class="flex items-center gap-2 text-xs text-gray-600">
+                                <span class="w-1.5 h-1.5 bg-status-green rounded-full"></span>
+                                foodnetwork.com
+                              </div>
+                              <div class="flex items-center gap-2 text-xs text-gray-600">
+                                <span class="w-1.5 h-1.5 bg-status-green rounded-full"></span>
+                                healthline.com
+                              </div>
+                              <div class="text-xs text-gray-400">+18 more included</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="sitesApproval" class="bg-gray-50 px-5 py-3 border-t border-gray-200 flex items-center justify-between">
+                        <span class="text-xs text-gray-500">27 excluded, 21 included domains</span>
+                        <div class="flex items-center gap-2">
+                          <button onclick="approveSection('sites')" class="px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
+                            Approve
+                          </button>
+                          <button onclick="editSection('sites')" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Measurement Mode Card -->
+                    <div id="measurementModeCard" class="animate-section section-card bg-white border border-gray-200 rounded-xl overflow-hidden">
+                      <div class="bg-gray-50 px-5 py-3 border-b border-gray-200">
+                        <div class="flex items-center gap-2">
+                          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                          </svg>
+                          <span class="text-sm font-semibold text-gray-900">Measurement Mode</span>
+                        </div>
+                      </div>
+                      <div class="p-5 space-y-3">
+                        <!-- Option 1: Measurement Only (Selected by default) -->
+                        <label class="block cursor-pointer">
+                          <div class="flex items-start gap-3 p-4 border-2 border-brand-purple bg-brand-purple-light/30 rounded-xl transition-all" id="measurementOnlyOption">
+                            <input type="radio" name="measurementMode" value="measurement" checked class="mt-1 w-4 h-4 text-brand-purple border-gray-300 focus:ring-brand-purple">
+                            <div class="flex-1">
+                              <div class="flex items-center gap-2 mb-1">
+                                <span class="text-sm font-medium text-gray-900">Measurement Only</span>
+                                <span class="text-[10px] text-brand-purple bg-brand-purple-light px-2 py-0.5 rounded font-medium">Recommended</span>
+                              </div>
+                              <p class="text-xs text-gray-500">Monitor and report on brand safety without blocking. Recommended for new campaigns.</p>
+                            </div>
+                          </div>
+                        </label>
+
+                        <!-- Option 2: Measurement + ABS -->
+                        <label class="block cursor-pointer">
+                          <div class="flex items-start gap-3 p-4 border border-gray-200 rounded-xl hover:border-gray-300 transition-all" id="absOption">
+                            <input type="radio" name="measurementMode" value="abs" class="mt-1 w-4 h-4 text-brand-purple border-gray-300 focus:ring-brand-purple">
+                            <div class="flex-1">
+                              <div class="flex items-center gap-2 mb-1">
+                                <span class="text-sm font-medium text-gray-900">Measurement + ABS (Active Blocking)</span>
+                                <span class="text-[10px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded font-medium">Requires Upgrade</span>
+                              </div>
+                              <p class="text-xs text-gray-500 mb-3">Full protection with real-time blocking based on your profile settings.</p>
+                              <div class="space-y-2 pl-1">
+                                <div class="flex items-center gap-2">
+                                  <svg class="w-3.5 h-3.5 text-brand-purple flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                  </svg>
+                                  <span class="text-xs text-gray-600">Sentiment Analysis - Block based on content tone, not just keywords</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                  <svg class="w-3.5 h-3.5 text-brand-purple flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                  </svg>
+                                  <span class="text-xs text-gray-600">Custom Categories - Create brand-specific avoidance topics</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                  <svg class="w-3.5 h-3.5 text-brand-purple flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                  </svg>
+                                  <span class="text-xs text-gray-600">Real-time Optimization - AI-powered adjustments based on performance</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                      <div id="measurementApproval" class="bg-gray-50 px-5 py-3 border-t border-gray-200 flex items-center justify-between">
+                        <span class="text-xs text-gray-500">Select your measurement mode</span>
+                        <div class="flex items-center gap-2">
+                          <button onclick="approveSection('measurement')" class="px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
+                            Confirm
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Create Profile Section (Shown immediately, starts disabled) -->
+            <div id="createProfileSection" class="animate-section">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-medium text-gray-900 mb-3">Vera</div>
+                  <div id="createProfileCard" class="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden transition-all">
+                    <div class="p-5">
+                      <p class="text-sm text-gray-700 mb-4">Once you've reviewed all sections, name your profile to create it.</p>
+
+                      <!-- Approval Checklist -->
+                      <div class="mb-4 space-y-2">
+                        <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-2">Required Approvals</div>
+                        <div id="checklistMeasurement" class="flex items-center gap-2 text-xs">
+                          <div class="w-4 h-4 rounded border border-gray-300 bg-white flex items-center justify-center">
+                            <svg class="w-3 h-3 text-status-green hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                            </svg>
+                          </div>
+                          <span class="text-gray-500">Measurement Mode</span>
+                        </div>
+                        <div id="checklistGeneral" class="flex items-center gap-2 text-xs">
+                          <div class="w-4 h-4 rounded border border-gray-300 bg-white flex items-center justify-center">
+                            <svg class="w-3 h-3 text-status-green hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                            </svg>
+                          </div>
+                          <span class="text-gray-500">General Information</span>
+                        </div>
+                        <div id="checklistAvoidance" class="flex items-center gap-2 text-xs">
+                          <div class="w-4 h-4 rounded border border-gray-300 bg-white flex items-center justify-center">
+                            <svg class="w-3 h-3 text-status-green hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                            </svg>
+                          </div>
+                          <span class="text-gray-500">Avoidance Topics</span>
+                        </div>
+                        <div id="checklistKeywords" class="flex items-center gap-2 text-xs">
+                          <div class="w-4 h-4 rounded border border-gray-300 bg-white flex items-center justify-center">
+                            <svg class="w-3 h-3 text-status-green hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                            </svg>
+                          </div>
+                          <span class="text-gray-500">Keywords</span>
+                        </div>
+                        <div id="checklistSites" class="flex items-center gap-2 text-xs">
+                          <div class="w-4 h-4 rounded border border-gray-300 bg-white flex items-center justify-center">
+                            <svg class="w-3 h-3 text-status-green hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                            </svg>
+                          </div>
+                          <span class="text-gray-500">Site Exclusion / Inclusion</span>
+                        </div>
+                      </div>
+
+                      <!-- Profile Name Input -->
+                      <div class="mb-4">
+                        <label for="profileNameInput" class="block text-[11px] text-gray-400 uppercase tracking-wide mb-2">Profile Name</label>
+                        <input
+                          type="text"
+                          id="profileNameInput"
+                          placeholder="Enter a name for this profile..."
+                          value="Q1 2026 Harbor Brew Zero Brand Awareness - US Market"
+                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                          disabled
+                          oninput="updateCreateButtonState()"
+                        >
+                      </div>
+                    </div>
+
+                    <div class="bg-gray-100 px-5 py-3 border-t border-gray-200 flex items-center justify-between">
+                      <span id="createStatusText" class="text-xs text-gray-400">Approve all sections to create profile</span>
+                      <button
+                        id="createProfileBtn"
+                        onclick="createProfile()"
+                        class="px-4 py-2 bg-gray-300 text-gray-500 text-sm font-medium rounded-lg cursor-not-allowed transition-colors"
+                        disabled
+                      >
+                        Create Profile
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Created Success (Hidden by default) -->
+            <div id="profileCreated" class="hidden">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-medium text-gray-900 mb-3">Vera</div>
+                  <div class="space-y-4">
+                    <!-- Success Message -->
+                    <div class="bg-status-green-light border border-green-200 rounded-xl p-4">
+                      <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                          <svg class="w-5 h-5 text-status-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                        </div>
+                        <div>
+                          <p class="text-sm font-semibold text-green-800">Profile Created Successfully!</p>
+                          <p class="text-sm text-green-700 mt-1"><strong>Q1 2026 Harbor Brew Zero Brand Awareness - US Market</strong> is now active with measurement-only mode.</p>
+                          <p class="text-xs text-green-600 mt-2">You'll start seeing data shortly for campaigns with this profile assigned at your DSPs.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Navigation Options -->
+                    <div class="flex items-center gap-3">
+                      <a href="campaigns-after.html" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                        Go to Campaigns
+                      </a>
+                      <button onclick="createAnother()" class="text-sm text-brand-purple font-medium hover:text-brand-purple-dark">
+                        Create another profile
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="border-t border-gray-200 px-8 py-4 bg-white flex-shrink-0">
+          <div class="max-w-4xl mx-auto">
+            <div class="flex items-center gap-3">
+              <input
+                id="chatInput"
+                type="text"
+                placeholder="Ask Vera a question or request changes..."
+                class="flex-1 h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent"
+              >
+              <button id="sendBtn" class="h-12 px-5 flex items-center gap-2 bg-brand-purple rounded-xl hover:bg-purple-700 transition-colors">
+                <span class="text-sm font-medium text-white">Send</span>
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Track approved sections
+    const approvedSections = {
+      measurement: false,
+      general: false,
+      avoidance: false,
+      keywords: false,
+      sites: false
+    };
+
+    // File upload state
+    let uploadedFile = { name: 'Q1_2026_Harbor_Brew_Zero_Campaign_Brief.pdf', size: 2516582 }; // Pre-populated fake file
+
+    // Initialize page on load
+    document.addEventListener('DOMContentLoaded', function() {
+      const messagesArea = document.getElementById('messagesArea');
+      // Ensure we start at the top of the messages area
+      messagesArea.scrollTop = 0;
+
+      // Set up measurement mode radio button styling
+      const measurementRadios = document.querySelectorAll('input[name="measurementMode"]');
+      measurementRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          // Reset all options to default styling
+          document.getElementById('measurementOnlyOption').className = 'flex items-start gap-3 p-4 border border-gray-200 rounded-xl transition-all';
+          document.getElementById('absOption').className = 'flex items-start gap-3 p-4 border border-gray-200 rounded-xl hover:border-gray-300 transition-all';
+
+          // Highlight selected option
+          if (this.value === 'measurement') {
+            document.getElementById('measurementOnlyOption').className = 'flex items-start gap-3 p-4 border-2 border-brand-purple bg-brand-purple-light/30 rounded-xl transition-all';
+          } else {
+            document.getElementById('absOption').className = 'flex items-start gap-3 p-4 border-2 border-brand-purple bg-brand-purple-light/30 rounded-xl transition-all';
+          }
+        });
+      });
+    });
+
+    // Start with Upload option
+    function startWithUpload() {
+      document.getElementById('welcomeMessage').classList.add('hidden');
+      document.getElementById('uploadInterface').classList.remove('hidden');
+
+      const messagesArea = document.getElementById('messagesArea');
+      messagesArea.scrollTo({
+        top: messagesArea.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+
+    // Start with URL option
+    function startWithURL() {
+      document.getElementById('welcomeMessage').classList.add('hidden');
+      document.getElementById('urlInterface').classList.remove('hidden');
+
+      const messagesArea = document.getElementById('messagesArea');
+      messagesArea.scrollTo({
+        top: messagesArea.scrollHeight,
+        behavior: 'smooth'
+      });
+
+      // Focus the URL input
+      setTimeout(() => {
+        document.getElementById('urlInput').focus();
+      }, 100);
+    }
+
+    // Analyze website directly (with pre-filled URL)
+    function analyzeWebsite() {
+      document.getElementById('welcomeMessage').classList.add('hidden');
+
+      // Set pre-filled URL for demo
+      uploadedFile = { name: 'harbourview.com', size: 0, isUrl: true };
+
+      // Update thinking text to show website analysis
+      document.getElementById('thinkingText').textContent = 'Analyzing harbourview.com...';
+
+      startAnalysis();
+    }
+
+    // Analyze URL
+    function analyzeURL() {
+      const url = document.getElementById('urlInput').value.trim();
+      if (!url) return;
+
+      // Set fake file based on URL for demo
+      uploadedFile = { name: url, size: 0, isUrl: true };
+      startAnalysis();
+    }
+
+    // Handle file upload
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        uploadedFile = file;
+
+        // Show file preview
+        const dropZone = document.getElementById('dropZone');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+
+        dropZone.classList.add('hidden');
+        filePreview.classList.remove('hidden');
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+      }
+    }
+
+    // Format file size
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    // Remove uploaded file
+    function removeFile(event) {
+      event.stopPropagation();
+      uploadedFile = null;
+
+      const dropZone = document.getElementById('dropZone');
+      const filePreview = document.getElementById('filePreview');
+      const fileInput = document.getElementById('fileInput');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+
+      dropZone.classList.remove('hidden');
+      filePreview.classList.add('hidden');
+      if (fileInput) fileInput.value = '';
+      if (analyzeBtn) analyzeBtn.disabled = true;
+    }
+
+    // Start analysis after file upload
+    function startAnalysis() {
+      if (!uploadedFile) return;
+
+      const messagesArea = document.getElementById('messagesArea');
+      const welcomeMessage = document.getElementById('welcomeMessage');
+      const uploadInterface = document.getElementById('uploadInterface');
+      const urlInterface = document.getElementById('urlInterface');
+      const thinkingIndicator = document.getElementById('thinkingIndicator');
+      const profileSummary = document.getElementById('profileSummary');
+      const thinkingText = document.getElementById('thinkingText');
+
+      // Hide all initial interfaces, show thinking
+      welcomeMessage.classList.add('hidden');
+      uploadInterface.classList.add('hidden');
+      urlInterface.classList.add('hidden');
+      thinkingIndicator.classList.remove('hidden');
+
+      // Reset scroll to top first, then scroll to thinking indicator
+      messagesArea.scrollTop = 0;
+      setTimeout(() => {
+        messagesArea.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 50);
+
+      // Sequence of thinking messages
+      const thinkingMessages = [
+        'Analyzing campaign brief...',
+        'Identifying industry benchmarks...',
+        'Building category recommendations...',
+        'Preparing profile summary...'
+      ];
+
+      let thinkingIndex = 0;
+
+      // Update thinking message every 700ms
+      const thinkingInterval = setInterval(() => {
+        thinkingIndex++;
+        if (thinkingIndex < thinkingMessages.length) {
+          thinkingText.textContent = thinkingMessages[thinkingIndex];
+        }
+      }, 700);
+
+      // After thinking, show the profile summary
+      setTimeout(() => {
+        clearInterval(thinkingInterval);
+        thinkingIndicator.classList.add('hidden');
+        profileSummary.classList.remove('hidden');
+
+        // Reset scroll to top before showing sections
+        messagesArea.scrollTop = 0;
+
+        // Animate sections in sequence
+        const sections = [
+          { id: 'introText', delay: 100 },
+          { id: 'generalCard', delay: 600 },
+          { id: 'avoidanceCard', delay: 1200 },
+          { id: 'keywordsCard', delay: 1800 },
+          { id: 'sitesCard', delay: 2400 },
+          { id: 'measurementModeCard', delay: 3000 },
+          { id: 'createProfileSection', delay: 3600 },
+        ];
+
+        sections.forEach(section => {
+          setTimeout(() => {
+            const el = document.getElementById(section.id);
+            if (el) {
+              el.classList.add('visible');
+              // Scroll to keep the newly visible section in view
+              const elRect = el.getBoundingClientRect();
+              const containerRect = messagesArea.getBoundingClientRect();
+              const scrollTarget = messagesArea.scrollTop + elRect.bottom - containerRect.bottom + 40;
+              if (scrollTarget > messagesArea.scrollTop) {
+                messagesArea.scrollTo({
+                  top: scrollTarget,
+                  behavior: 'smooth'
+                });
+              }
+            }
+          }, section.delay);
+        });
+
+      }, 2800);
+    }
+
+    // Approve section
+    function approveSection(section) {
+      approvedSections[section] = true;
+
+      const approvalDiv = document.getElementById(`${section}Approval`);
+      if (approvalDiv) {
+        approvalDiv.className = 'bg-status-green-light px-5 py-3 border-t border-green-200';
+        approvalDiv.innerHTML = `
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-status-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span class="text-xs font-medium text-green-800">Section approved</span>
+          </div>
+        `;
+      }
+
+      // Update the checklist
+      updateChecklist(section, true);
+
+      // Check if all sections are approved
+      checkAllApproved();
+    }
+
+    // Update checklist item
+    function updateChecklist(section, approved) {
+      const checklistMap = {
+        measurement: 'checklistMeasurement',
+        general: 'checklistGeneral',
+        avoidance: 'checklistAvoidance',
+        keywords: 'checklistKeywords',
+        sites: 'checklistSites'
+      };
+
+      const checklistItem = document.getElementById(checklistMap[section]);
+      if (checklistItem) {
+        const checkbox = checklistItem.querySelector('div');
+        const checkmark = checklistItem.querySelector('svg');
+        const label = checklistItem.querySelector('span');
+
+        if (approved) {
+          checkbox.className = 'w-4 h-4 rounded border border-status-green bg-status-green-light flex items-center justify-center';
+          checkmark.classList.remove('hidden');
+          label.className = 'text-gray-900 font-medium';
+        } else {
+          checkbox.className = 'w-4 h-4 rounded border border-gray-300 bg-white flex items-center justify-center';
+          checkmark.classList.add('hidden');
+          label.className = 'text-gray-500';
+        }
+      }
+    }
+
+    // Update create button state
+    function updateCreateButtonState() {
+      const allApproved = Object.values(approvedSections).every(v => v);
+      const profileNameInput = document.getElementById('profileNameInput');
+      const createBtn = document.getElementById('createProfileBtn');
+      const statusText = document.getElementById('createStatusText');
+      const createCard = document.getElementById('createProfileCard');
+
+      const hasName = profileNameInput.value.trim().length > 0;
+
+      if (allApproved && hasName) {
+        createBtn.disabled = false;
+        createBtn.className = 'px-4 py-2 bg-brand-purple text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors cursor-pointer';
+        statusText.textContent = 'Ready to create profile';
+        statusText.className = 'text-xs text-status-green font-medium';
+      } else if (allApproved && !hasName) {
+        createBtn.disabled = true;
+        createBtn.className = 'px-4 py-2 bg-gray-300 text-gray-500 text-sm font-medium rounded-lg cursor-not-allowed transition-colors';
+        statusText.textContent = 'Enter a profile name to continue';
+        statusText.className = 'text-xs text-amber-600';
+      } else {
+        createBtn.disabled = true;
+        createBtn.className = 'px-4 py-2 bg-gray-300 text-gray-500 text-sm font-medium rounded-lg cursor-not-allowed transition-colors';
+        const remaining = Object.values(approvedSections).filter(v => !v).length;
+        statusText.textContent = `Approve ${remaining} more section${remaining > 1 ? 's' : ''} to continue`;
+        statusText.className = 'text-xs text-gray-400';
+      }
+    }
+
+    // Edit section
+    function editSection(section) {
+      // In a real app, this would open an edit modal
+      alert(`Edit ${section} section - This would open an edit modal in the full implementation.`);
+    }
+
+    // Check if all sections approved
+    function checkAllApproved() {
+      const allApproved = Object.values(approvedSections).every(v => v);
+      const profileNameInput = document.getElementById('profileNameInput');
+      const createCard = document.getElementById('createProfileCard');
+
+      if (allApproved) {
+        // Enable the name input
+        profileNameInput.disabled = false;
+        profileNameInput.focus();
+
+        // Update card styling to show it's active
+        createCard.className = 'bg-white border border-brand-purple rounded-xl overflow-hidden transition-all shadow-sm';
+
+        // Scroll to show the create section
+        const messagesArea = document.getElementById('messagesArea');
+        setTimeout(() => {
+          messagesArea.scrollTo({
+            top: messagesArea.scrollHeight,
+            behavior: 'smooth'
+          });
+        }, 300);
+      }
+
+      // Update button state
+      updateCreateButtonState();
+    }
+
+    // Create profile
+    function createProfile() {
+      const profileName = document.getElementById('profileNameInput').value.trim();
+      const measurementType = document.querySelector('input[name="measurementMode"]:checked').value;
+      const measurementLabel = measurementType === 'measurement' ? 'measurement-only mode' : 'measurement + active blocking';
+
+      document.getElementById('createProfileSection').classList.add('hidden');
+      document.getElementById('profileCreated').classList.remove('hidden');
+
+      // Update the success message with the profile name
+      const successMessage = document.getElementById('profileCreated').querySelector('.text-sm.text-green-700');
+      if (successMessage) {
+        successMessage.innerHTML = `<strong>${profileName}</strong> is now active with ${measurementLabel}.`;
+      }
+
+      const messagesArea = document.getElementById('messagesArea');
+      messagesArea.scrollTo({
+        top: messagesArea.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+
+    // Edit more
+    function editMore() {
+      // Reset approvals so user can re-edit
+      Object.keys(approvedSections).forEach(key => {
+        approvedSections[key] = false;
+        // Reset checklist
+        updateChecklist(key, false);
+        const approvalDiv = document.getElementById(`${key}Approval`);
+        if (approvalDiv) {
+          // Restore original approval buttons based on section
+          restoreApprovalButtons(key);
+        }
+      });
+
+      // Disable name input and reset create card styling
+      const profileNameInput = document.getElementById('profileNameInput');
+      const createCard = document.getElementById('createProfileCard');
+      profileNameInput.disabled = true;
+      createCard.className = 'bg-gray-50 border border-gray-200 rounded-xl overflow-hidden transition-all';
+
+      // Update button state
+      updateCreateButtonState();
+    }
+
+    // Restore approval buttons
+    function restoreApprovalButtons(section) {
+      const approvalDiv = document.getElementById(`${section}Approval`);
+      if (!approvalDiv) return;
+
+      approvalDiv.className = 'bg-gray-50 px-5 py-3 border-t border-gray-200 flex items-center justify-between';
+
+      if (section === 'measurement') {
+        approvalDiv.innerHTML = `
+          <span class="text-xs text-gray-500">Select your measurement mode</span>
+          <div class="flex items-center gap-2">
+            <button onclick="approveSection('measurement')" class="px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
+              Confirm
+            </button>
+          </div>
+        `;
+      } else if (section === 'avoidance') {
+        approvalDiv.innerHTML = `
+          <span class="text-xs text-gray-500">Review the topic selections above</span>
+          <div class="flex items-center gap-2">
+            <button onclick="approveSection('avoidance')" class="px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
+              Approve
+            </button>
+            <button onclick="editSection('avoidance')" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors">
+              Edit
+            </button>
+          </div>
+        `;
+      } else {
+        approvalDiv.innerHTML = `
+          <span class="text-xs text-gray-500">Does this look correct?</span>
+          <div class="flex items-center gap-2">
+            <button onclick="approveSection('${section}')" class="px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
+              Approve
+            </button>
+            <button onclick="editSection('${section}')" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors">
+              Edit
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // Toggle more categories
+    function toggleMoreCategories() {
+      const text = document.getElementById('moreCategoriesText');
+      const icon = document.getElementById('moreCategoriesIcon');
+
+      if (text.textContent.includes('Show')) {
+        text.textContent = 'Hide additional categories';
+        icon.style.transform = 'rotate(180deg)';
+        // In full implementation, would show more categories
+      } else {
+        text.textContent = 'Show 8 more categories';
+        icon.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // Create another profile
+    function createAnother() {
+      // Reset everything
+      location.reload();
+    }
+
+    // Handle chat input
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      const messagesArea = document.getElementById('messagesArea');
+      const messageContainer = document.getElementById('messageContainer');
+
+      const userMessageHtml = `
+        <div class="fade-in flex justify-end">
+          <div class="bg-brand-purple text-white rounded-xl px-4 py-3 max-w-md">
+            <p class="text-sm">${message}</p>
+          </div>
+        </div>
+      `;
+
+      messageContainer.insertAdjacentHTML('beforeend', userMessageHtml);
+      chatInput.value = '';
+
+      messagesArea.scrollTo({
+        top: messagesArea.scrollHeight,
+        behavior: 'smooth'
+      });
+
+      // Simulate AI response
+      setTimeout(() => {
+        const aiResponseHtml = `
+          <div class="fade-in">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <div class="text-sm font-medium text-gray-900 mb-2">Vera</div>
+                <div class="text-sm text-gray-700">
+                  <p>I understand you're asking about "${message}". I can help you adjust the profile settings. Which section would you like me to modify?</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        messageContainer.insertAdjacentHTML('beforeend', aiResponseHtml);
+
+        messagesArea.scrollTo({
+          top: messagesArea.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
