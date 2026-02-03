@@ -438,14 +438,14 @@
                             </div>
                             <div class="pl-6 space-y-2">
                               <div class="flex items-center gap-2">
-                                <input type="checkbox" id="topic-swimsuits" class="w-3.5 h-3.5 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <input type="checkbox" id="topic-swimsuits" checked class="w-3.5 h-3.5 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
                                 <label for="topic-swimsuits" class="text-xs text-gray-600 flex items-center gap-2">
                                   Swimsuits
                                   <span class="text-[9px] text-status-yellow bg-status-yellow-light px-1.5 py-0.5 rounded">Can Unblock</span>
                                 </label>
                               </div>
                               <div class="flex items-center gap-2">
-                                <input type="checkbox" id="topic-sexual-health" class="w-3.5 h-3.5 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
+                                <input type="checkbox" id="topic-sexual-health" checked class="w-3.5 h-3.5 text-brand-purple rounded border-gray-300 focus:ring-brand-purple">
                                 <label for="topic-sexual-health" class="text-xs text-gray-600 flex items-center gap-2">
                                   Sexual Health
                                   <span class="text-[9px] text-status-yellow bg-status-yellow-light px-1.5 py-0.5 rounded">Can Unblock</span>
@@ -543,6 +543,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                           </svg>
                           <span class="text-sm font-semibold text-gray-900">Keywords</span>
+                          <span class="text-[10px] text-brand-purple bg-brand-purple-light px-2 py-0.5 rounded font-medium inline-flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            Industry Standard
+                          </span>
                         </div>
                       </div>
                       <div class="p-5">
@@ -576,51 +582,48 @@
                           <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
                           </svg>
-                          <span class="text-sm font-semibold text-gray-900">Site Exclusion / Inclusion</span>
+                          <span class="text-sm font-semibold text-gray-900">Site Exclusion</span>
+                          <span class="text-[10px] text-brand-purple bg-brand-purple-light px-2 py-0.5 rounded font-medium inline-flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            Industry Standard
+                          </span>
                         </div>
                       </div>
                       <div class="p-5">
-                        <div class="grid grid-cols-2 gap-4">
-                          <div>
-                            <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-2">Excluded Domains</div>
-                            <div class="space-y-1.5">
-                              <div class="flex items-center gap-2 text-xs text-gray-600">
-                                <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
-                                clickbait-news.com
-                              </div>
-                              <div class="flex items-center gap-2 text-xs text-gray-600">
-                                <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
-                                fake-reviews.net
-                              </div>
-                              <div class="flex items-center gap-2 text-xs text-gray-600">
-                                <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
-                                low-quality-content.io
-                              </div>
-                              <div class="text-xs text-gray-400">+24 more excluded</div>
+                        <div>
+                          <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-2">Excluded Domains</div>
+                          <div class="space-y-1.5">
+                            <div class="flex items-center gap-2 text-xs text-gray-600">
+                              <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
+                              clickbait-news.com
                             </div>
-                          </div>
-                          <div>
-                            <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-2">Included Domains (Allowlist)</div>
-                            <div class="space-y-1.5">
-                              <div class="flex items-center gap-2 text-xs text-gray-600">
-                                <span class="w-1.5 h-1.5 bg-status-green rounded-full"></span>
-                                espn.com
-                              </div>
-                              <div class="flex items-center gap-2 text-xs text-gray-600">
-                                <span class="w-1.5 h-1.5 bg-status-green rounded-full"></span>
-                                foodnetwork.com
-                              </div>
-                              <div class="flex items-center gap-2 text-xs text-gray-600">
-                                <span class="w-1.5 h-1.5 bg-status-green rounded-full"></span>
-                                healthline.com
-                              </div>
-                              <div class="text-xs text-gray-400">+18 more included</div>
+                            <div class="flex items-center gap-2 text-xs text-gray-600">
+                              <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
+                              fake-reviews.net
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-gray-600">
+                              <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
+                              low-quality-content.io
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-gray-600">
+                              <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
+                              misleading-ads.com
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-gray-600">
+                              <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
+                              spam-content.org
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-gray-600">
+                              <span class="w-1.5 h-1.5 bg-status-red rounded-full"></span>
+                              unsafe-downloads.net
                             </div>
                           </div>
                         </div>
                       </div>
                       <div id="sitesApproval" class="bg-gray-50 px-5 py-3 border-t border-gray-200 flex items-center justify-between">
-                        <span class="text-xs text-gray-500">27 excluded, 21 included domains</span>
+                        <span class="text-xs text-gray-500">6 excluded domains</span>
                         <div class="flex items-center gap-2">
                           <button onclick="approveSection('sites')" class="px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
                             Approve
@@ -722,14 +725,6 @@
                       <!-- Approval Checklist -->
                       <div class="mb-4 space-y-2">
                         <div class="text-[11px] text-gray-400 uppercase tracking-wide mb-2">Required Approvals</div>
-                        <div id="checklistMeasurement" class="flex items-center gap-2 text-xs">
-                          <div class="w-4 h-4 rounded border border-gray-300 bg-white flex items-center justify-center">
-                            <svg class="w-3 h-3 text-status-green hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                            </svg>
-                          </div>
-                          <span class="text-gray-500">Measurement Mode</span>
-                        </div>
                         <div id="checklistGeneral" class="flex items-center gap-2 text-xs">
                           <div class="w-4 h-4 rounded border border-gray-300 bg-white flex items-center justify-center">
                             <svg class="w-3 h-3 text-status-green hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -760,7 +755,15 @@
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                             </svg>
                           </div>
-                          <span class="text-gray-500">Site Exclusion / Inclusion</span>
+                          <span class="text-gray-500">Site Exclusion</span>
+                        </div>
+                        <div id="checklistMeasurement" class="flex items-center gap-2 text-xs">
+                          <div class="w-4 h-4 rounded border border-gray-300 bg-white flex items-center justify-center">
+                            <svg class="w-3 h-3 text-status-green hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                            </svg>
+                          </div>
+                          <span class="text-gray-500">Measurement Mode</span>
                         </div>
                       </div>
 
