@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DV | Protect - Context Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif'],
+          },
+          colors: {
+            'gray': {
+              50: '#F9FAFB',
+              100: '#F2F4F7',
+              200: '#E4E7EC',
+              300: '#D0D5DD',
+              400: '#98A2B3',
+              500: '#667085',
+              600: '#475467',
+              700: '#344054',
+              800: '#1D2939',
+              900: '#101828',
+            },
+            'brand': {
+              purple: '#7F56D9',
+              'purple-light': '#F4F3FF',
+            },
+            'status': {
+              'red': '#F04438',
+              'red-light': '#FEF3F2',
+              'red-dark': '#B42318',
+              'green': '#12B76A',
+              'green-light': '#ECFDF3',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .slide-in {
+      animation: slideIn 0.4s ease-out forwards;
+    }
+
+    .message-appear {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    /* Typing indicator */
+    .typing-dot {
+      animation: typingBounce 1.4s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); }
+    }
+
+    /* Scrollbar styling */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #E4E7EC;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #D0D5DD;
+    }
+
+    /* Line clamp for text truncation */
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Expandable rows */
+    .breakdown-row {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .breakdown-row:hover {
+      background-color: #F2F4F7;
+    }
+    .breakdown-row .chevron {
+      transition: transform 0.2s ease;
+    }
+    .breakdown-row.expanded .chevron {
+      transform: rotate(180deg);
+    }
+    .breakdown-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.2s ease;
+      opacity: 0;
+    }
+    .breakdown-content.expanded {
+      max-height: 600px;
+      opacity: 1;
+    }
+
+    /* Keyword table styles */
+    .keyword-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .keyword-table th {
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #667085;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #E4E7EC;
+      background: #F9FAFB;
+    }
+    .keyword-table td {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #344054;
+      border-bottom: 1px solid #F2F4F7;
+    }
+    .keyword-table tr:hover {
+      background-color: #F9FAFB;
+    }
+    .keyword-table .rank {
+      color: #667085;
+      font-weight: 500;
+      width: 50px;
+    }
+    .keyword-table .keyword {
+      font-family: monospace;
+      font-weight: 500;
+    }
+    .keyword-table .blocks {
+      text-align: right;
+      font-weight: 600;
+      color: #101828;
+    }
+    .validation-warning {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 12px;
+      color: #667085;
+      line-height: 1.4;
+    }
+    .validation-warning svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .validation-warning.amber svg {
+      color: #F79009;
+    }
+    .validation-warning.red svg {
+      color: #F04438;
+    }
+    .validation-ok {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #667085;
+    }
+    .validation-ok svg {
+      color: #12B76A;
+    }
+
+    /* Keyword row actions */
+    .keyword-actions {
+      position: relative;
+    }
+    .keyword-actions-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      color: #667085;
+      transition: all 0.15s ease;
+    }
+    .keyword-actions-btn:hover {
+      background-color: #F2F4F7;
+      color: #344054;
+    }
+    .keyword-actions-menu {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 4px;
+      width: 200px;
+      background: white;
+      border: 1px solid #E4E7EC;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      z-index: 50;
+      display: none;
+    }
+    .keyword-actions-menu.show {
+      display: block;
+    }
+    .keyword-actions-menu a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #344054;
+      transition: background-color 0.15s ease;
+    }
+    .keyword-actions-menu a:hover {
+      background-color: #F9FAFB;
+    }
+    .keyword-actions-menu a:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+    .keyword-actions-menu a:last-child {
+      border-radius: 0 0 8px 8px;
+    }
+    .keyword-actions-menu a svg {
+      width: 16px;
+      height: 16px;
+      color: #667085;
+    }
+    .keyword-actions-menu .divider {
+      height: 1px;
+      background: #E4E7EC;
+      margin: 4px 0;
+    }
+    .keyword-actions-menu a.danger {
+      color: #B42318;
+    }
+    .keyword-actions-menu a.danger svg {
+      color: #F04438;
+    }
+  </style>
+</head>
+<body class="h-full bg-white">
+  <div id="app" class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-900 flex flex-col flex-shrink-0">
+      <!-- Logo -->
+      <div class="px-5 py-5 flex items-center gap-3">
+        <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center">
+          <span class="text-gray-900 font-bold text-lg">DV</span>
+        </div>
+        <div>
+          <h1 class="text-white font-semibold text-base leading-tight">Protect</h1>
+          <p class="text-gray-400 text-xs">by DoubleVerify</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex flex-col gap-1 px-3">
+        <a href="campaigns.html" class="flex items-center gap-3 px-3 py-2 rounded-md bg-gray-800 text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+          </svg>
+          <span class="text-sm font-medium">Campaigns</span>
+        </a>
+        <a href="profiles.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          <span class="text-sm font-medium">Brand Safety Profiles</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <span class="text-sm font-medium">Reports</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          <span class="text-sm font-medium">Support</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content + Right Rail Container -->
+    <div class="flex-1 flex overflow-hidden">
+      <!-- Main Content -->
+      <main class="flex-1 bg-gray-50 flex flex-col overflow-hidden">
+      <!-- Page Header -->
+      <header class="px-8 pt-6 pb-0 flex-shrink-0">
+        <!-- Top Bar -->
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-2">
+            <a href="campaigns.html" class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">Campaigns</a>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <div class="relative">
+              <button id="campaignDropdownBtn" class="flex items-center gap-1.5 px-2 py-1 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">
+                <span class="text-sm font-medium text-gray-700">Acme Corp - Q1 Brand Campaign</span>
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+              <!-- Campaign Dropdown -->
+              <div id="campaignDropdown" class="hidden absolute top-full left-0 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                <div class="p-2">
+                  <div class="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide">Needs Attention</div>
+                  <a href="index.html" class="flex items-center justify-between px-3 py-2 rounded-md bg-gray-50 text-sm text-gray-900 font-medium">
+                    <span>Acme Corp - Q1 Brand Campaign</span>
+                    <span class="text-status-red text-xs">8.7%</span>
+                  </a>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>TechStart - Product Launch</span>
+                    <span class="text-status-red text-xs">9.2%</span>
+                  </a>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>FinServ - Retirement Planning</span>
+                    <span class="text-status-red text-xs">10.1%</span>
+                  </a>
+
+                  <div class="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide mt-2">At Risk</div>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>RetailMax - Spring Sale</span>
+                    <span class="text-status-yellow text-xs">7.1%</span>
+                  </a>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>AutoDrive - EV Launch</span>
+                    <span class="text-status-yellow text-xs">6.9%</span>
+                  </a>
+
+                  <div class="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide mt-2">On Track</div>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>HealthPlus - Wellness Program</span>
+                    <span class="text-status-green text-xs">5.2%</span>
+                  </a>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>FoodCo - New Menu Items</span>
+                    <span class="text-status-green text-xs">4.8%</span>
+                  </a>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>TravelEasy - Summer Getaways</span>
+                    <span class="text-status-green text-xs">5.9%</span>
+                  </a>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>EduLearn - Online Courses</span>
+                    <span class="text-status-green text-xs">3.4%</span>
+                  </a>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>SportGear - Winter Collection</span>
+                    <span class="text-status-green text-xs">4.1%</span>
+                  </a>
+                  <a href="#" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                    <span>BeautyBrand - Skincare Launch</span>
+                    <span class="text-status-green text-xs">5.5%</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </button>
+            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+            </button>
+            <button class="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+              <span class="text-sm font-medium text-gray-700">Ask Vera</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Title Row -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-semibold text-gray-900">Campaign Overview</h1>
+            <p class="text-sm text-gray-500 mt-1">Monitor brand safety performance and optimize settings</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              <span class="text-sm font-medium text-gray-700">Export</span>
+            </button>
+            <a href="analyze.html" class="flex items-center gap-2 px-4 py-2.5 bg-brand-purple text-white rounded-lg hover:bg-purple-700 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+              <span class="text-sm font-medium">Analyze</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <div class="flex-1 px-8 pb-6 overflow-hidden flex flex-col">
+        <!-- Metrics Row -->
+        <div class="flex gap-4 mb-4 flex-shrink-0">
+          <!-- Block Rate Card -->
+          <div class="flex-1 bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-gray-500">Block Rate</span>
+              <span class="inline-flex items-center gap-1 px-2 py-1 bg-status-red-light rounded-full">
+                <svg class="w-3 h-3 text-status-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+                <span class="text-xs font-medium text-status-red">+2.4%</span>
+              </span>
+            </div>
+            <div class="text-4xl font-semibold text-gray-900">8.7%</div>
+            <div class="text-xs text-gray-500 mt-1">of impressions blocked</div>
+          </div>
+
+          <!-- Top Blocker Card -->
+          <div class="flex-1 bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-gray-500">Top Blocker</span>
+              <span class="inline-flex items-center gap-1 px-2 py-1 bg-status-red-light rounded-full">
+                <svg class="w-3 h-3 text-status-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+                <span class="text-xs font-medium text-status-red">+12%</span>
+              </span>
+            </div>
+            <div class="text-4xl font-semibold text-gray-900">Keywords</div>
+            <div class="text-xs text-gray-500 mt-1">42% of total blocks</div>
+          </div>
+
+          <!-- Benchmark Card -->
+          <div class="flex-1 bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-gray-500">vs. Industry Benchmark</span>
+              <span class="inline-flex items-center gap-1 px-2 py-1 bg-status-red-light rounded-full">
+                <svg class="w-3 h-3 text-status-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                  <line x1="12" y1="8" x2="12" y2="12" stroke-width="2"/>
+                  <line x1="12" y1="16" x2="12" y2="16" stroke-width="2"/>
+                </svg>
+                <span class="text-xs font-medium text-status-red">Off track</span>
+              </span>
+            </div>
+            <div class="text-4xl font-semibold text-status-red">+2.1%</div>
+            <div class="text-xs text-gray-500 mt-1">above industry avg (6.6%)</div>
+          </div>
+        </div>
+
+        <!-- Content Row -->
+        <div class="flex gap-4 flex-1 min-h-0">
+          <!-- Block Breakdown Panel - now takes full width -->
+          <div class="flex-1 bg-white rounded-xl border border-gray-200 p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="text-base font-semibold text-gray-900">Block Rate Breakdown</h2>
+              <button class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md hover:bg-gray-100 transition-colors">
+                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-width="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6" stroke-width="2"/>
+                  <line x1="8" y1="2" x2="8" y2="6" stroke-width="2"/>
+                  <line x1="3" y1="10" x2="21" y2="10" stroke-width="2"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-700">Last 7 days</span>
+                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="flex flex-col gap-3 flex-1">
+              <!-- Row 1 - Keywords -->
+              <div class="breakdown-wrapper">
+                <div class="breakdown-row flex items-center justify-between bg-gray-50 rounded-lg p-3" data-target="keywords-content">
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-700">Keywords</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-sm font-semibold text-gray-900">3.6%</span>
+                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-gray-400 rounded-full" style="width: 72%"></div>
+                    </div>
+                    <svg class="chevron w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div id="keywords-content" class="breakdown-content bg-white rounded-b-lg -mt-1 border border-t-0 border-gray-200">
+                  <div class="overflow-hidden">
+                    <table class="keyword-table">
+                      <thead>
+                        <tr>
+                          <th>Rank</th>
+                          <th>Keyword</th>
+                          <th class="text-right">Total Blocks</th>
+                          <th>Validation Status</th>
+                          <th class="text-right" style="width: 50px;"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="keywordTableBody">
+                        <!-- Page 1 content (rows 1-10) -->
+                        <tr>
+                          <td class="rank">1</td>
+                          <td class="keyword">crisis</td>
+                          <td class="blocks">188,268</td>
+                          <td>
+                            <div class="validation-warning amber">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                              </svg>
+                              <span>Potentially ambiguous. May have other meanings or include other factors that may lead to unintended avoidance.</span>
+                            </div>
+                          </td>
+                          <td class="text-right">
+                            <div class="keyword-actions">
+                              <button class="keyword-actions-btn" onclick="event.stopPropagation(); toggleKeywordMenu(this)">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                                </svg>
+                              </button>
+                              <div class="keyword-actions-menu">
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                  View blocked URLs
+                                </a>
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                  Edit keyword
+                                </a>
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                  Add exception
+                                </a>
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                  Simulate removal
+                                </a>
+                                <div class="divider"></div>
+                                <a href="#" class="danger" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                  Remove keyword
+                                </a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="rank">2</td>
+                          <td class="keyword">death</td>
+                          <td class="blocks">122,385</td>
+                          <td>
+                            <div class="validation-warning amber">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                              </svg>
+                              <span>Potentially ambiguous. May have other meanings, be dependent on context, or include other factors.</span>
+                            </div>
+                          </td>
+                          <td class="text-right">
+                            <div class="keyword-actions">
+                              <button class="keyword-actions-btn" onclick="event.stopPropagation(); toggleKeywordMenu(this)">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                                </svg>
+                              </button>
+                              <div class="keyword-actions-menu">
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                  View blocked URLs
+                                </a>
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                  Edit keyword
+                                </a>
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                  Add exception
+                                </a>
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                  Simulate removal
+                                </a>
+                                <div class="divider"></div>
+                                <a href="#" class="danger" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                  Remove keyword
+                                </a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="rank">3</td>
+                          <td class="keyword">lawsuit</td>
+                          <td class="blocks">72,343</td>
+                          <td>
+                            <div class="validation-ok">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                              </svg>
+                              <span>No validation warnings for this keyword.</span>
+                            </div>
+                          </td>
+                          <td class="text-right">
+                            <div class="keyword-actions">
+                              <button class="keyword-actions-btn" onclick="event.stopPropagation(); toggleKeywordMenu(this)">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                                </svg>
+                              </button>
+                              <div class="keyword-actions-menu">
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                  View blocked URLs
+                                </a>
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                  Edit keyword
+                                </a>
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                  Add exception
+                                </a>
+                                <a href="#" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                  Simulate removal
+                                </a>
+                                <div class="divider"></div>
+                                <a href="#" class="danger" onclick="event.preventDefault();">
+                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                  Remove keyword
+                                </a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="rank">4</td>
+                          <td class="keyword">%22+dead+%22</td>
+                          <td class="blocks">56,859</td>
+                          <td>
+                            <div class="validation-ok">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                              </svg>
+                              <span>No validation warnings for this keyword.</span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="rank">5</td>
+                          <td class="keyword">ism</td>
+                          <td class="blocks">42,921</td>
+                          <td>
+                            <div class="validation-warning red">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                              </svg>
+                              <span>Keywords with &lt;4 characters may cause unintended avoidance. This keyword has been removed.</span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="rank">6</td>
+                          <td class="keyword">scandal</td>
+                          <td class="blocks">32,487</td>
+                          <td>
+                            <div class="validation-ok">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                              </svg>
+                              <span>No validation warnings for this keyword.</span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="rank">7</td>
+                          <td class="keyword">bankrupt</td>
+                          <td class="blocks">26,189</td>
+                          <td>
+                            <div class="validation-ok">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                              </svg>
+                              <span>No validation warnings for this keyword.</span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="rank">8</td>
+                          <td class="keyword">fraud</td>
+                          <td class="blocks">25,663</td>
+                          <td>
+                            <div class="validation-ok">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                              </svg>
+                              <span>No validation warnings for this keyword.</span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="rank">9</td>
+                          <td class="keyword">violence</td>
+                          <td class="blocks">21,988</td>
+                          <td>
+                            <div class="validation-warning amber">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                              </svg>
+                              <span>Potentially ambiguous. May have other meanings, be dependent on context.</span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="rank">10</td>
+                          <td class="keyword">terror</td>
+                          <td class="blocks">19,445</td>
+                          <td>
+                            <div class="validation-ok">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                              </svg>
+                              <span>No validation warnings for this keyword.</span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-gray-50">
+                      <div class="text-sm text-gray-500">
+                        Showing <span id="keywordPageStart">1</span>-<span id="keywordPageEnd">10</span> of <span class="font-medium">18</span> keywords
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <button id="keywordPrevBtn" disabled class="px-3 py-1.5 text-sm font-medium text-gray-400 bg-white border border-gray-200 rounded-md cursor-not-allowed">
+                          Previous
+                        </button>
+                        <button id="keywordPage1Btn" class="px-3 py-1.5 text-sm font-medium text-white bg-brand-purple border border-brand-purple rounded-md">
+                          1
+                        </button>
+                        <button id="keywordPage2Btn" class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50">
+                          2
+                        </button>
+                        <button id="keywordNextBtn" class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50">
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 2 - Unsuitable Categories -->
+              <div class="breakdown-wrapper">
+                <div class="breakdown-row flex items-center justify-between bg-gray-50 rounded-lg p-3" data-target="categories-content">
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-700">Unsuitable Categories</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-sm font-semibold text-gray-900">2.8%</span>
+                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-gray-400 rounded-full" style="width: 56%"></div>
+                    </div>
+                    <svg class="chevron w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div id="categories-content" class="breakdown-content bg-gray-50 rounded-b-lg -mt-1 px-3 pb-3">
+                  <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-200">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-full text-xs font-medium text-amber-700">
+                      Gambling - Low <span class="text-amber-500">1.1%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 border border-red-200 rounded-full text-xs font-medium text-red-700">
+                      Violence <span class="text-red-500">0.7%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 border border-red-200 rounded-full text-xs font-medium text-red-700">
+                      Adult Content <span class="text-red-500">0.5%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-full text-xs font-medium text-amber-700">
+                      Alcohol <span class="text-amber-500">0.3%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">
+                      Tobacco <span class="text-gray-400">0.2%</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 3 - Exclusion List -->
+              <div class="breakdown-wrapper">
+                <div class="breakdown-row flex items-center justify-between bg-gray-50 rounded-lg p-3" data-target="exclusion-content">
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-700">Exclusion List</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-sm font-semibold text-gray-900">1.5%</span>
+                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-gray-400 rounded-full" style="width: 30%"></div>
+                    </div>
+                    <svg class="chevron w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div id="exclusion-content" class="breakdown-content bg-gray-50 rounded-b-lg -mt-1 px-3 pb-3">
+                  <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-200">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">
+                      competitor-a.com <span class="text-gray-400">0.4%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">
+                      competitor-b.com <span class="text-gray-400">0.3%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">
+                      fake-news-site.net <span class="text-gray-400">0.3%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">
+                      low-quality.io <span class="text-gray-400">0.2%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">
+                      +8 more
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 4 - Unclassified Sites -->
+              <div class="breakdown-wrapper">
+                <div class="breakdown-row flex items-center justify-between bg-gray-50 rounded-lg p-3" data-target="unclassified-content">
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-700">Unclassified Sites</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-sm font-semibold text-gray-900">0.8%</span>
+                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-gray-400 rounded-full" style="width: 16%"></div>
+                    </div>
+                    <svg class="chevron w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div id="unclassified-content" class="breakdown-content bg-gray-50 rounded-b-lg -mt-1 px-3 pb-3">
+                  <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-200">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 border border-gray-300 rounded-full text-xs font-medium text-gray-600">
+                      unknown-blog-123.com <span class="text-gray-400">0.2%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 border border-gray-300 rounded-full text-xs font-medium text-gray-600">
+                      new-site-xyz.net <span class="text-gray-400">0.2%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 border border-gray-300 rounded-full text-xs font-medium text-gray-600">
+                      pending-review.io <span class="text-gray-400">0.1%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 border border-gray-300 rounded-full text-xs font-medium text-gray-600">
+                      uncategorized-abc.com <span class="text-gray-400">0.1%</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">
+                      +15 more
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+        </div>
+      </div>
+  </div>
+
+  <script>
+    // State management
+    let chatMode = false;
+    let messages = [];
+
+    // DOM Elements
+    const insightsContent = document.getElementById('insightsContent');
+    const reviewKeywordBtn = document.getElementById('reviewKeywordBtn');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const insightCard1 = document.getElementById('insightCard1');
+    const insightCard2 = document.getElementById('insightCard2');
+    const insightCard3 = document.getElementById('insightCard3');
+
+    // AI Response for blocked URLs
+    const blockedUrlsAnalysis = {
+      question: "View top blocked URLs for Acme Corp - Q1 Brand Campaign",
+      response: `Here are your top blocked URLs this week. I've grouped them by blocking reason:`,
+      sitePreviewsHtml: `
+        <div class="mt-3 space-y-3">
+          <!-- Category Header -->
+          <div class="flex items-center gap-2 pt-2">
+            <span class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Keyword: "crisis"</span>
+            <span class="text-xs text-gray-400">• 312 blocks</span>
+          </div>
+
+          <!-- Site Preview Card 1 -->
+          <div class="bg-white border border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-colors">
+            <div class="flex gap-3">
+              <div class="w-16 h-16 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=128&h=128&fit=crop" alt="Financial news" class="w-full h-full object-cover" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-gray-400 truncate mb-1">cnn.com/business/markets</p>
+                <p class="text-sm font-medium text-gray-900 line-clamp-2">Market Analysis: Economic Indicators Show Mixed Signals Amid Global Uncertainty</p>
+                <div class="flex items-center gap-2 mt-1.5">
+                  <span class="px-1.5 py-0.5 bg-gray-100 rounded text-xs text-gray-600">News</span>
+                  <span class="text-xs text-gray-400">847 impressions blocked</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Site Preview Card 2 -->
+          <div class="bg-white border border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-colors">
+            <div class="flex gap-3">
+              <div class="w-16 h-16 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=128&h=128&fit=crop" alt="Investment strategy" class="w-full h-full object-cover" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-gray-400 truncate mb-1">reuters.com/markets/wealth</p>
+                <p class="text-sm font-medium text-gray-900 line-clamp-2">Investment Strategy: How to Navigate Portfolio Risk in Volatile Markets</p>
+                <div class="flex items-center gap-2 mt-1.5">
+                  <span class="px-1.5 py-0.5 bg-gray-100 rounded text-xs text-gray-600">Finance</span>
+                  <span class="text-xs text-gray-400">623 impressions blocked</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Header 2 -->
+          <div class="flex items-center gap-2 pt-3">
+            <span class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Category: Gambling - Low</span>
+            <span class="text-xs text-gray-400">• 186 blocks</span>
+          </div>
+
+          <!-- Site Preview Card 3 -->
+          <div class="bg-white border border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-colors">
+            <div class="flex gap-3">
+              <div class="w-16 h-16 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=128&h=128&fit=crop" alt="Fantasy sports" class="w-full h-full object-cover" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-gray-400 truncate mb-1">espn.com/fantasy/football</p>
+                <p class="text-sm font-medium text-gray-900 line-clamp-2">Fantasy Football Week 12: Start/Sit Recommendations and Projections</p>
+                <div class="flex items-center gap-2 mt-1.5">
+                  <span class="px-1.5 py-0.5 bg-amber-50 rounded text-xs text-amber-700">Gambling - Low</span>
+                  <span class="text-xs text-gray-400">421 impressions blocked</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      followUpQuestions: [
+        "Why is CNN being blocked?",
+        "Add exception for financial news",
+        "Show me sentiment analysis",
+        "Export full blocked URL list"
+      ]
+    };
+
+    // AI Response for keyword review
+    const keywordAnalysis = {
+      question: "Review keyword 'crisis' for Acme Corp - Q1 Brand Campaign",
+      response: `I've analyzed the keyword 'crisis' blocking behavior for your campaign. Here's what I found:
+
+**Impact Summary:**
+- **1.2%** of impressions blocked (approximately 48,000 impressions/day)
+- **$2,340** estimated daily spend impact
+
+**Context Analysis:**
+The keyword 'crisis' is triggering blocks on legitimate financial news content, including:
+- Market analysis articles
+- Economic trend reports
+- Investment strategy pieces
+
+**Recommendation:**
+Consider using **contextual targeting** instead of blanket keyword blocking. This would allow your ads on financial analysis content while still avoiding truly negative crisis coverage.
+
+**Quick Actions:**
+1. Add "financial crisis" as an exception
+2. Switch to sentiment-based blocking
+3. Review blocked URLs for false positives`,
+      actions: [
+        { label: "Add exception for 'financial crisis'", type: "primary" },
+        { label: "View blocked URLs", type: "secondary" },
+        { label: "Simulate change impact", type: "secondary" }
+      ],
+      followUpQuestions: [
+        "What other keywords are causing issues?",
+        "Show sentiment breakdown",
+        "How does this compare to last month?",
+        "Recommend optimal settings"
+      ]
+    };
+
+    // Follow-up responses for blocked URLs
+    const blockedUrlsFollowUps = {
+      "Why is CNN being blocked?": `CNN is being blocked because the article contains the keyword **"crisis"** in the headline and body text.
+
+**Specifically:**
+- The word "crisis" appears 3 times in this article
+- Your current settings block **any** content containing this keyword
+- This is a **false positive** - the article discusses economic indicators, not actual crises
+
+**Recommendation:**
+Consider switching to **sentiment-based blocking** which would allow this neutral financial analysis while still blocking genuinely negative crisis coverage.`,
+      "Add exception for financial news": `I can help you add an exception for financial news content. Here's what this would do:
+
+**Proposed Exception:**
+- **Category:** Financial News & Analysis
+- **Sites affected:** CNN Business, Reuters Markets, Bloomberg, WSJ, etc.
+- **Estimated impact:** +12,400 impressions/day recovered
+
+**Before I apply this:**
+Would you like me to run a simulation first to see exactly which URLs would be unblocked?`,
+      "Show me sentiment analysis": `Here's the sentiment breakdown for content blocked by the keyword "crisis":
+
+**Sentiment Distribution:**
+- **Neutral (68%)** - Financial analysis, market reports
+- **Negative (24%)** - Actual crisis coverage, disasters
+- **Positive (8%)** - Recovery stories, solutions
+
+**Key Protect:**
+Most blocked content is actually **neutral financial news**. Switching to sentiment-based blocking could recover 68% of these impressions while maintaining brand safety.`,
+      "Export full blocked URL list": `I've prepared your blocked URL export. The file includes:
+
+**Export Details:**
+- **847 URLs** from the past 7 days
+- Columns: URL, Block Reason, Impressions, Category, Sentiment
+- Format: CSV (Excel compatible)
+
+**Download ready!** Click below to get your file.`
+    };
+
+    // Follow-up responses for keyword review
+    const keywordFollowUps = {
+      "What other keywords are causing issues?": `Here are your top keywords by block volume this week:
+
+**High-Impact Keywords:**
+1. **"crisis"** - 1.2% of impressions (you're reviewing this)
+2. **"death"** - 0.8% of impressions
+3. **"lawsuit"** - 0.6% of impressions
+4. **"scandal"** - 0.4% of impressions
+
+**Recommendation:**
+"Death" is also triggering false positives on health/science content. Would you like me to analyze that keyword next?`,
+      "Show sentiment breakdown": `Here's the sentiment analysis for content blocked by "crisis":
+
+**Content Sentiment:**
+- **68% Neutral** - Market analysis, economic reports
+- **24% Negative** - Actual crisis coverage
+- **8% Positive** - Recovery/solution stories
+
+**Protect:**
+You're blocking nearly 3x more neutral content than truly negative content. Sentiment-based targeting would be more precise.`,
+      "How does this compare to last month?": `**Month-over-Month Comparison:**
+
+| Metric | Last Month | This Month | Change |
+|--------|-----------|------------|--------|
+| Block Rate | 6.3% | 8.7% | +2.4% |
+| "Crisis" Blocks | 0.7% | 1.2% | +0.5% |
+| False Positives | ~40% | ~68% | +28% |
+
+**What Changed:**
+Increased news coverage of economic topics has led to more "crisis" keyword matches on legitimate financial content.`,
+      "Recommend optimal settings": `Based on my analysis, here are my recommended settings:
+
+**Recommended Changes:**
+1. ✅ Switch "crisis" to **sentiment-based blocking**
+2. ✅ Add exception for **Financial News** category
+3. ✅ Keep strict blocking for **actual crisis events**
+
+**Projected Impact:**
+- **+3.2%** impression recovery
+- **Maintained** brand safety score
+- **$2,340/day** in recovered spend
+
+Would you like me to apply these recommendations?`
+    };
+
+    // Helper function to render chat messages
+    function renderChatView() {
+      chatMode = true;
+      insightsContent.innerHTML = '';
+      insightsContent.className = 'flex-1 overflow-y-auto custom-scrollbar p-4 flex flex-col gap-4';
+
+      // Add back button
+      const backBtn = document.createElement('button');
+      backBtn.className = 'flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors mb-2';
+      backBtn.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        <span>Back to insights</span>
+      `;
+      backBtn.onclick = resetToProtects;
+      insightsContent.appendChild(backBtn);
+
+      // Render existing messages
+      messages.forEach((msg, index) => {
+        const msgEl = createMessageElement(msg, index === messages.length - 1);
+        insightsContent.appendChild(msgEl);
+      });
+
+      // Attach click handlers to follow-up buttons
+      insightsContent.querySelectorAll('.follow-up-btn').forEach(btn => {
+        btn.addEventListener('click', handleFollowUpClick);
+      });
+
+      // Scroll to bottom
+      insightsContent.scrollTop = insightsContent.scrollHeight;
+    }
+
+    // Handle follow-up question clicks
+    function handleFollowUpClick(e) {
+      const question = e.target.dataset.question;
+      if (!question) return;
+
+      // Add user message
+      messages.push({
+        type: 'user',
+        content: question
+      });
+
+      renderChatView();
+
+      // Show typing indicator
+      messages.push({ type: 'typing' });
+      renderChatView();
+
+      // Find the appropriate response
+      let response = blockedUrlsFollowUps[question] || keywordFollowUps[question];
+
+      // Default response if not found
+      if (!response) {
+        response = `I'm analyzing your question: "${question}"
+
+Based on your campaign data, I can provide more details on this. Let me look into it...
+
+**Summary:**
+This would require additional analysis of your specific campaign settings and historical data.
+
+Would you like me to generate a detailed report on this topic?`;
+      }
+
+      // Simulate AI response delay
+      setTimeout(() => {
+        messages.pop();
+        messages.push({
+          type: 'ai',
+          content: response,
+          followUpQuestions: ["Tell me more", "Apply this change", "Show related insights"]
+        });
+        renderChatView();
+      }, 1200);
+    }
+
+    function createMessageElement(msg, isLatest) {
+      const wrapper = document.createElement('div');
+      wrapper.className = `${isLatest ? 'message-appear' : ''}`;
+
+      if (msg.type === 'user') {
+        wrapper.innerHTML = `
+          <div class="flex justify-end mb-4">
+            <div class="max-w-[85%] bg-brand-purple text-white rounded-2xl rounded-br-md px-4 py-3">
+              <p class="text-sm">${msg.content}</p>
+            </div>
+          </div>
+        `;
+      } else if (msg.type === 'ai') {
+        const actionsHtml = msg.actions ? `
+          <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
+            ${msg.actions.map(action => `
+              <button class="${action.type === 'primary'
+                ? 'px-3 py-1.5 bg-brand-purple text-white text-xs font-medium rounded-md hover:bg-purple-700'
+                : 'px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50'} transition-colors">
+                ${action.label}
+              </button>
+            `).join('')}
+          </div>
+        ` : '';
+
+        const sitePreviewsHtml = msg.sitePreviews || '';
+
+        const followUpHtml = msg.followUpQuestions ? `
+          <div class="mt-4 pt-4 border-t border-gray-200 follow-up-section">
+            <p class="text-xs font-medium text-gray-500 mb-2">Follow-up questions</p>
+            <div class="flex flex-wrap gap-2">
+              ${msg.followUpQuestions.map(q => `
+                <button class="follow-up-btn px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded-full hover:bg-gray-50 hover:border-gray-300 transition-colors" data-question="${q.replace(/"/g, '&quot;')}">
+                  ${q}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        ` : '';
+
+        wrapper.innerHTML = `
+          <div class="flex gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+            </div>
+            <div class="flex-1 bg-gray-50 rounded-2xl rounded-tl-md px-4 py-3">
+              <div class="text-sm text-gray-700 leading-relaxed prose prose-sm max-w-none">
+                ${formatMarkdown(msg.content)}
+              </div>
+              ${sitePreviewsHtml}
+              ${actionsHtml}
+              ${followUpHtml}
+            </div>
+          </div>
+        `;
+      } else if (msg.type === 'typing') {
+        wrapper.innerHTML = `
+          <div class="flex gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full bg-brand-purple-light flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+            </div>
+            <div class="bg-gray-50 rounded-2xl rounded-tl-md px-4 py-3">
+              <div class="flex items-center gap-1.5">
+                <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      return wrapper;
+    }
+
+    function formatMarkdown(text) {
+      return text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '</p><p class="mt-3">')
+        .replace(/\n(\d+\.)/g, '</p><p class="mt-2">$1')
+        .replace(/^/, '<p>')
+        .replace(/$/, '</p>');
+    }
+
+    function resetToProtects() {
+      chatMode = false;
+      messages = [];
+      insightsContent.innerHTML = `
+        <!-- Protect Card 1 - Keyword Alert -->
+        <div id="insightCard1" class="bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-300 transition-colors fade-in">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-status-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <span class="text-sm font-semibold text-status-red-dark">Keyword Alert</span>
+          </div>
+          <p class="text-sm text-gray-500 leading-relaxed mb-3">The keyword 'crisis' is blocking 1.2% of impressions. Consider reviewing this keyword for your campaign context.</p>
+          <button id="reviewKeywordBtn" class="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+            <span>Review keyword</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Protect Card 2 - Optimization -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-300 transition-colors fade-in" style="animation-delay: 0.1s">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+            <span class="text-sm font-semibold text-gray-700">Optimization Opportunity</span>
+          </div>
+          <p class="text-sm text-gray-500 leading-relaxed mb-3">Adjusting 'Gambling - Low' category could unlock +3.2% additional scale while maintaining brand safety.</p>
+          <button class="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+            <span>Simulate change</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Protect Card 3 - Top Blocked URLs -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-300 transition-colors fade-in" style="animation-delay: 0.2s">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+            </svg>
+            <span class="text-sm font-semibold text-gray-700">Top Blocked URLs</span>
+          </div>
+          <p class="text-sm text-gray-500 leading-relaxed mb-3">847 URLs blocked this week (12% increase). See which URLs are most often blocked and why, with explanations by category.</p>
+          <button class="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+            <span>View blocked URLs</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </div>
+      `;
+
+      // Re-attach event listener
+      document.getElementById('reviewKeywordBtn').addEventListener('click', handleReviewKeyword);
+    }
+
+    function handleReviewKeyword(e) {
+      e.stopPropagation();
+
+      // Add user message
+      messages.push({
+        type: 'user',
+        content: keywordAnalysis.question
+      });
+
+      // Switch to chat view
+      renderChatView();
+
+      // Show typing indicator
+      messages.push({ type: 'typing' });
+      renderChatView();
+
+      // Simulate AI response delay
+      setTimeout(() => {
+        // Remove typing indicator and add AI response
+        messages.pop();
+        messages.push({
+          type: 'ai',
+          content: keywordAnalysis.response,
+          actions: keywordAnalysis.actions,
+          followUpQuestions: keywordAnalysis.followUpQuestions
+        });
+        renderChatView();
+      }, 1500);
+    }
+
+    function handleSendMessage() {
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      // Add user message
+      messages.push({
+        type: 'user',
+        content: message
+      });
+
+      chatInput.value = '';
+
+      if (!chatMode) {
+        renderChatView();
+      } else {
+        renderChatView();
+      }
+
+      // Show typing indicator
+      messages.push({ type: 'typing' });
+      renderChatView();
+
+      // Simulate AI response
+      setTimeout(() => {
+        messages.pop();
+        messages.push({
+          type: 'ai',
+          content: `I understand you're asking about "${message}". Based on your campaign data, I can see several relevant insights. Let me analyze this for you...
+
+**Key Findings:**
+- Your current configuration shows opportunities for optimization
+- There are patterns in your blocking data worth investigating
+
+Would you like me to dive deeper into any specific aspect of this analysis?`,
+          actions: [
+            { label: "Show detailed analysis", type: "primary" },
+            { label: "Export findings", type: "secondary" }
+          ]
+        });
+        renderChatView();
+      }, 1500);
+    }
+
+    // Handle View Blocked URLs click
+    function handleViewBlockedUrls(e) {
+      e.stopPropagation();
+
+      // Add user message
+      messages.push({
+        type: 'user',
+        content: blockedUrlsAnalysis.question
+      });
+
+      // Switch to chat view
+      renderChatView();
+
+      // Show typing indicator
+      messages.push({ type: 'typing' });
+      renderChatView();
+
+      // Simulate AI response delay
+      setTimeout(() => {
+        // Remove typing indicator and add AI response
+        messages.pop();
+        messages.push({
+          type: 'ai',
+          content: blockedUrlsAnalysis.response,
+          sitePreviews: blockedUrlsAnalysis.sitePreviewsHtml,
+          followUpQuestions: blockedUrlsAnalysis.followUpQuestions
+        });
+        renderChatView();
+      }, 1500);
+    }
+
+    // Campaign dropdown toggle
+    const campaignDropdownBtn = document.getElementById('campaignDropdownBtn');
+    const campaignDropdown = document.getElementById('campaignDropdown');
+
+    campaignDropdownBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      campaignDropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!campaignDropdown.contains(e.target) && !campaignDropdownBtn.contains(e.target)) {
+        campaignDropdown.classList.add('hidden');
+      }
+    });
+
+    // Breakdown row expand/collapse
+    document.querySelectorAll('.breakdown-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const targetId = row.dataset.target;
+        const content = document.getElementById(targetId);
+
+        // Toggle expanded state
+        row.classList.toggle('expanded');
+        content.classList.toggle('expanded');
+
+        // Update border radius when expanded
+        if (row.classList.contains('expanded')) {
+          row.classList.remove('rounded-lg');
+          row.classList.add('rounded-t-lg');
+        } else {
+          row.classList.remove('rounded-t-lg');
+          row.classList.add('rounded-lg');
+        }
+      });
+    });
+
+    // Keyword actions menu toggle
+    function toggleKeywordMenu(btn) {
+      // Close all other menus first
+      document.querySelectorAll('.keyword-actions-menu.show').forEach(menu => {
+        if (menu !== btn.nextElementSibling) {
+          menu.classList.remove('show');
+        }
+      });
+      // Toggle this menu
+      const menu = btn.nextElementSibling;
+      menu.classList.toggle('show');
+    }
+
+    // Close keyword menus when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.keyword-actions')) {
+        document.querySelectorAll('.keyword-actions-menu.show').forEach(menu => {
+          menu.classList.remove('show');
+        });
+      }
+    });
+
+    // Generate actions menu HTML
+    function getActionsMenuHtml() {
+      return `
+        <td class="text-right">
+          <div class="keyword-actions">
+            <button class="keyword-actions-btn" onclick="event.stopPropagation(); toggleKeywordMenu(this)">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+              </svg>
+            </button>
+            <div class="keyword-actions-menu">
+              <a href="#" onclick="event.preventDefault();">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                View blocked URLs
+              </a>
+              <a href="#" onclick="event.preventDefault();">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Edit keyword
+              </a>
+              <a href="#" onclick="event.preventDefault();">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                Add exception
+              </a>
+              <a href="#" onclick="event.preventDefault();">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                Simulate removal
+              </a>
+              <div class="divider"></div>
+              <a href="#" class="danger" onclick="event.preventDefault();">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Remove keyword
+              </a>
+            </div>
+          </div>
+        </td>
+      `;
+    }
+
+    // Keyword table pagination
+    const keywordPage2Data = [
+      { rank: 11, keyword: 'disaster', blocks: '18,234', status: 'ok' },
+      { rank: 12, keyword: 'attack', blocks: '15,892', status: 'warning', message: 'Potentially ambiguous. May have multiple meanings in different contexts.' },
+      { rank: 13, keyword: 'shooting', blocks: '14,567', status: 'ok' },
+      { rank: 14, keyword: 'murder', blocks: '12,445', status: 'ok' },
+      { rank: 15, keyword: 'bomb', blocks: '11,234', status: 'ok' },
+      { rank: 16, keyword: 'war', blocks: '9,876', status: 'warning', message: 'Potentially ambiguous. May block legitimate historical or gaming content.' },
+      { rank: 17, keyword: 'kill', blocks: '8,543', status: 'ok' },
+      { rank: 18, keyword: 'hate', blocks: '7,234', status: 'ok' }
+    ];
+
+    let currentKeywordPage = 1;
+
+    function renderKeywordPage(page) {
+      currentKeywordPage = page;
+      const tbody = document.getElementById('keywordTableBody');
+      const pageStart = document.getElementById('keywordPageStart');
+      const pageEnd = document.getElementById('keywordPageEnd');
+      const prevBtn = document.getElementById('keywordPrevBtn');
+      const nextBtn = document.getElementById('keywordNextBtn');
+      const page1Btn = document.getElementById('keywordPage1Btn');
+      const page2Btn = document.getElementById('keywordPage2Btn');
+
+      if (page === 1) {
+        // Page 1 - rows 1-10
+        pageStart.textContent = '1';
+        pageEnd.textContent = '10';
+        prevBtn.disabled = true;
+        prevBtn.className = 'px-3 py-1.5 text-sm font-medium text-gray-400 bg-white border border-gray-200 rounded-md cursor-not-allowed';
+        nextBtn.disabled = false;
+        nextBtn.className = 'px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50';
+        page1Btn.className = 'px-3 py-1.5 text-sm font-medium text-white bg-brand-purple border border-brand-purple rounded-md';
+        page2Btn.className = 'px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50';
+
+        tbody.innerHTML = `
+          <tr>
+            <td class="rank">1</td>
+            <td class="keyword">crisis</td>
+            <td class="blocks">188,268</td>
+            <td>
+              <div class="validation-warning amber">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <span>Potentially ambiguous. May have other meanings or include other factors that may lead to unintended avoidance.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td class="keyword">death</td>
+            <td class="blocks">122,385</td>
+            <td>
+              <div class="validation-warning amber">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <span>Potentially ambiguous. May have other meanings, be dependent on context, or include other factors.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td class="keyword">lawsuit</td>
+            <td class="blocks">72,343</td>
+            <td>
+              <div class="validation-ok">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>No validation warnings for this keyword.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td class="keyword">%22+dead+%22</td>
+            <td class="blocks">56,859</td>
+            <td>
+              <div class="validation-ok">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>No validation warnings for this keyword.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td class="keyword">ism</td>
+            <td class="blocks">42,921</td>
+            <td>
+              <div class="validation-warning red">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <span>Keywords with &lt;4 characters may cause unintended avoidance. This keyword has been removed.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td class="keyword">scandal</td>
+            <td class="blocks">32,487</td>
+            <td>
+              <div class="validation-ok">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>No validation warnings for this keyword.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td class="keyword">bankrupt</td>
+            <td class="blocks">26,189</td>
+            <td>
+              <div class="validation-ok">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>No validation warnings for this keyword.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td class="keyword">fraud</td>
+            <td class="blocks">25,663</td>
+            <td>
+              <div class="validation-ok">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>No validation warnings for this keyword.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td class="keyword">violence</td>
+            <td class="blocks">21,988</td>
+            <td>
+              <div class="validation-warning amber">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <span>Potentially ambiguous. May have other meanings, be dependent on context.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td class="keyword">terror</td>
+            <td class="blocks">19,445</td>
+            <td>
+              <div class="validation-ok">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>No validation warnings for this keyword.</span>
+              </div>
+            </td>
+            ${getActionsMenuHtml()}
+          </tr>
+        `;
+      } else {
+        // Page 2 - rows 11-18
+        pageStart.textContent = '11';
+        pageEnd.textContent = '18';
+        prevBtn.disabled = false;
+        prevBtn.className = 'px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50';
+        nextBtn.disabled = true;
+        nextBtn.className = 'px-3 py-1.5 text-sm font-medium text-gray-400 bg-white border border-gray-200 rounded-md cursor-not-allowed';
+        page1Btn.className = 'px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50';
+        page2Btn.className = 'px-3 py-1.5 text-sm font-medium text-white bg-brand-purple border border-brand-purple rounded-md';
+
+        let html = '';
+        keywordPage2Data.forEach(item => {
+          const statusHtml = item.status === 'ok'
+            ? `<div class="validation-ok">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>No validation warnings for this keyword.</span>
+              </div>`
+            : `<div class="validation-warning amber">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <span>${item.message}</span>
+              </div>`;
+
+          html += `
+            <tr>
+              <td class="rank">${item.rank}</td>
+              <td class="keyword">${item.keyword}</td>
+              <td class="blocks">${item.blocks}</td>
+              <td>${statusHtml}</td>
+              ${getActionsMenuHtml()}
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      }
+    }
+
+    // Pagination button event listeners
+    document.getElementById('keywordPrevBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (currentKeywordPage > 1) {
+        renderKeywordPage(currentKeywordPage - 1);
+      }
+    });
+
+    document.getElementById('keywordNextBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (currentKeywordPage < 2) {
+        renderKeywordPage(currentKeywordPage + 1);
+      }
+    });
+
+    document.getElementById('keywordPage1Btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      renderKeywordPage(1);
+    });
+
+    document.getElementById('keywordPage2Btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      renderKeywordPage(2);
+    });
+
+    // Event Listeners
+    reviewKeywordBtn.addEventListener('click', handleReviewKeyword);
+
+    // Add listener for View blocked URLs button
+    const viewBlockedUrlsBtn = document.querySelector('#insightCard3 button');
+    if (viewBlockedUrlsBtn) {
+      viewBlockedUrlsBtn.addEventListener('click', handleViewBlockedUrls);
+    }
+
+    sendBtn.addEventListener('click', handleSendMessage);
+
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleSendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
